@@ -5,89 +5,89 @@
 <h1 align="center">Unia</h1>
 
 <p align="center">
-  <strong>Unia Desktop Music Player</strong> — Deezer ve YouTube entegrasyonu ile zenginleştirilmiş, Discord Zengin Durum (RPC) ve gelişmiş ses ekolayzırı barındıran modern, şık ve premium bir masaüstü müzik çalar.
+  <strong>Unia Desktop Music Player</strong> — A modern, sleek, and premium desktop music player featuring Deezer and YouTube integrations, Discord Rich Presence (RPC), and an advanced audio equalizer.
 </p>
 
 ---
 
-## 🚀 Özellikler
+## 🚀 Features
 
-- **🎵 YouTube ve Deezer Entegrasyonu**: Deezer API'si üzerinden müzik arayın ve akıllı arama algoritmasıyla YouTube üzerinden yüksek kaliteli ses akışı gerçekleştirin.
-- **💾 Arka Plan Yerel Önbelleği (Offline Playback)**: En son dinlediğiniz 10 şarkı arka planda otomatik olarak `.cache/` klasörüne MP3 olarak indirilir. İnternetiniz olmadığında veya tekrar çalındığında diskten anında (caching-hit) çalar.
-- **🎛️ 5-Bant Gelişmiş Ekolayzır (EQ)**: Müzik zevkinize göre ses frekanslarını ayarlayın. *Bass Booster, Vocal Booster, Pop, Electronic* presets mevcuttur (Yerel offline dosyalar için geçerlidir).
-- **🎮 Discord Rich Presence (RPC)**: Dinlediğiniz şarkıyı, sanatçıyı, albüm kapağını ve çalma süresini Discord profilinizde zengin durum olarak gösterin.
-- **🎨 Dinamik Arayüz Yerleşimleri**:
-  - Standart Düzen
-  - Ters Ayna Düzeni (Mirrored)
-  - Side-by-Side (Sol & Sağ)
-  - Kompakt Minimalist
-  - Sinematik Geniş Ekran
-- **🎨 Akıllı Renk Çıkarımı**: Çalan şarkının albüm kapağından baskın renkleri otomatik olarak analiz eder ve arayüz temasını o renk paletine göre dinamik olarak günceller.
-- **⏰ Uyku Zamanlayıcısı**: Şarkı bitiminde veya belirlediğiniz süre sonunda (5dk, 15dk, 30dk, 1saat) oynatmayı otomatik durdurun.
-- **📂 Yerel Dosya Oynatma**: Bilgisayarınızdaki yerel MP3 dosyalarını kitaplığınıza ekleyin ve ekolayzır desteği ile çalın.
+- **🎵 YouTube & Deezer Integration**: Search tracks via Deezer API and stream high-quality audio seamlessly through YouTube using intelligent video resolution.
+- **💾 Automatic Offline Caching**: The top 10 most recently played tracks are automatically cached to `.cache/` as MP3s in the background. When played again or offline, they load instantly from the local disk.
+- **🎛️ 5-Band Audio Equalizer (EQ)**: Customize frequency bands to match your music taste. Includes built-in presets: *Bass Booster, Vocal Booster, Pop, and Electronic* (available for offline/local files).
+- **🎮 Discord Rich Presence (RPC)**: Show off what you're listening to, including track name, artist, album art, and current progress, directly on your Discord profile.
+- **🎨 Dynamic Layout System**: Change layouts in real-time to match your style:
+  - Standard Layout
+  - Mirrored Layout
+  - Side-by-Side (Left & Right)
+  - Compact Minimalist
+  - Cinematic Widescreen
+- **🎨 Smart Color Extraction**: Automatically extracts the dominant colors from the current album art to dynamically style the interface theme.
+- **⏰ Sleep Timer**: Set a timer to automatically pause playback at the end of the song or after a custom duration (5m, 15m, 30m, 1h).
+- **📂 Local File Support**: Load local MP3 files into your library and play them with equalizer support.
 
 ---
 
-## 🛠️ Kurulum ve Çalıştırma
+## 🛠️ Installation & Running
 
-Projeyi yerel bilgisayarınızda çalıştırmak için aşağıdaki adımları izleyin:
+Follow these steps to get the project running locally:
 
-### Gereksinimler
-- [Node.js](https://nodejs.org/) (v16 veya üzeri tavsiye edilir)
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v16 or higher recommended)
 - [Git](https://git-scm.com/)
 
-### Adımlar
+### Steps
 
-1. **Projeyi Klonlayın**:
+1. **Clone the Repository**:
    ```bash
    git clone https://github.com/xenpian/unia.git
    cd unia
    ```
 
-2. **Bağımlılıkları Yükleyin**:
+2. **Install Dependencies**:
    ```bash
    npm install
    ```
 
-3. **Uygulamayı Başlatın**:
+3. **Start the Application**:
    ```bash
    npm start
    ```
-   *Bu komut Electron uygulamasını başlatır ve otomatik olarak yerel bir API sunucusunu (port 3000) ayağa kaldırır.*
+   *This starts the Electron window and spins up the local API server on port 3000.*
 
 ---
 
-## 📂 Klasör Yapısı
+## 📂 Project Structure
 
 ```text
 unia/
-├── android/            # Android native mobil projesi
-├── js/                 # Arayüz, tema, player ve state modülleri
-│   ├── player.js       # Playback kontrolü, ses akışı ve EQ
-│   ├── state.js        # Global uygulama durumu (durum yönetimi)
-│   ├── theme.js        # Dinamik renk teması çıkarma motoru
-│   └── ui-renderers.js # Slider, şarkı listesi ve profil render işlemleri
-├── logo/               # Unia logoları ve ikonları (unia.png, unia.ico)
-├── pages/              # Dinamik olarak yüklenen sayfa şablonları (home.html, playlist.html, vb.)
+├── android/            # Android native mobile application code
+├── js/                 # Application modules
+│   ├── player.js       # Playback core, streaming, and EQ controls
+│   ├── state.js        # Global state and settings storage
+│   ├── theme.js        # Dynamic theme styling engine
+│   └── ui-renderers.js # Slider, home grids, and profile renderers
+├── logo/               # Application assets (unia.ico, unia.png)
+├── pages/              # HTML layout templates (home, playlist, profile, shazam)
 ├── src/
-│   └── api-router.js   # Önbelleğe alma, YouTube arama ve akış API rotaları
-├── db.js               # JSON tabanlı yerel veritabanı (unia_local_db.json)
-├── main.js             # Electron ana süreci (main process)
-├── preload.js          # Güvenli Electron-Node IPC köprüsü (bridge)
-└── renderer.js         # Ön yüz orkestrasyon ve olay yöneticisi
+│   └── api-router.js   # Local server router handling cache and streams
+├── db.js               # JSON database manager (unia_local_db.json)
+├── main.js             # Electron main process entry point
+├── preload.js          # Secure Electron IPC communication bridge
+└── renderer.js         # App orchestrator and frontend event handlers
 ```
 
 ---
 
-## 📝 Katkıda Bulunma
+## 📝 Contributing
 
-1. Bu depoyu çatallayın (fork).
-2. Yeni bir özellik dalı (feature branch) oluşturun: `git checkout -b yeni-ozellik`.
-3. Değişikliklerinizi taahhüt edin (commit): `git commit -m 'feat: Yeni özellik eklendi'`.
-4. Dalınızı uzak depoya gönderin (push): `git push origin yeni-ozellik`.
-5. Bir Çekme İsteği (Pull Request) açın.
+1. Fork the project.
+2. Create a feature branch: `git checkout -b feature/my-new-feature`.
+3. Commit your changes: `git commit -m 'feat: Add some feature'`.
+4. Push to the branch: `git push origin feature/my-new-feature`.
+5. Open a Pull Request.
 
 ---
 
-## 📄 Lisans
-Bu proje **MIT Lisansı** ile lisanslanmıştır.
+## 📄 License
+This project is licensed under the **MIT License**.
