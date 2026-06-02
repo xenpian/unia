@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="unia.png" alt="Unia Logo" width="400" style="filter: drop-shadow(0 0 12px rgba(184, 158, 255, 0.45));" />
+  <img src="unia.png" alt="Unia Logo" width="700" style="filter: drop-shadow(0 0 12px rgba(184, 158, 255, 0.45));" />
 </p>
 
 <h1 align="center">Unia</h1>
