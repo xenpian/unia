@@ -1,0 +1,75 @@
+
+<!-- Pills (Tümü, Müzik, Podcast'ler) at the top of main container -->
+<div class="quick-tabs">
+  <button class="pill-btn active">Tümü</button>
+  <button class="pill-btn">Müzik</button>
+  <button class="pill-btn">Podcast'ler</button>
+</div>
+
+<!-- 8-card grid -->
+<section class="quick-grid"></section>
+
+<!-- Bugün İçin Tavsiye Section -->
+<section id="today-recommendation-section" style="margin-bottom: 32px;">
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 16px;">
+    <div>
+      <div
+        style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px;">
+        Yakın geçmişteki aktivitelerinden ilham aldı</div>
+      <h2
+        style="font-size: 22px; font-weight: 800; margin: 0; font-family: inherit; color: var(--text-main); letter-spacing: -0.5px;">
+        Bugün için tavsiye</h2>
+    </div>
+    <a href="#"
+      style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-decoration: none; transition: color 0.2s;"
+      onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'">Tümünü
+      göster</a>
+  </div>
+  <div class="today-rec-container" id="today-rec-container">
+    <!-- recommendations will be dynamically rendered here -->
+  </div>
+</section>
+
+<!-- Son Ziyaret Edilenler Section -->
+<section id="son-ziyaret-edilenler-section" style="margin-bottom: 32px; display: none;" class="hidden">
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 16px;">
+    <h2
+      style="font-size: 22px; font-weight: 800; margin: 0; font-family: inherit; color: var(--text-main); letter-spacing: -0.5px;">
+      Son ziyaret edilen profiller</h2>
+  </div>
+  <div class="today-rec-container" id="son-ziyaret-edilenler-container">
+    <!-- recently visited profiles will be dynamically rendered here -->
+  </div>
+</section>
+
+<!-- Son Çalınanlar Section -->
+<section id="son-calinanlar-section" style="margin-bottom: 32px;">
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 16px;">
+    <h2
+      style="font-size: 22px; font-weight: 800; margin: 0; font-family: inherit; color: var(--text-main); letter-spacing: -0.5px;">
+      Son çalınanlar</h2>
+    <a href="#"
+      style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-decoration: none; transition: color 0.2s;"
+      onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'">Tümünü
+      göster</a>
+  </div>
+  <div class="today-rec-container" id="son-calinanlar-container">
+    <!-- recently played items will be dynamically rendered here -->
+  </div>
+</section>
+
+<!-- Just Awp İçin Derlendi Section -->
+<section id="made-for-you-section" style="margin-bottom: 32px;">
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 16px;">
+    <h2 id="made-for-you-title"
+      style="font-size: 22px; font-weight: 800; margin: 0; font-family: inherit; color: var(--text-main); letter-spacing: -0.5px;">
+      Just Awp İçin Derlendi</h2>
+    <a href="#"
+      style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-decoration: none; transition: color 0.2s;"
+      onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'">Tümünü
+      göster</a>
+  </div>
+  <div class="today-rec-container" id="made-for-you-container">
+    <!-- custom mix cards will be dynamically rendered here -->
+  </div>
+</section>

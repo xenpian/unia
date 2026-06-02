@@ -1,0 +1,47 @@
+{
+  "name": "unia",
+  "version": "1.0.0",
+  "description": "Unia Desktop Music Player",
+  "main": "main.js",
+  "scripts": {
+    "server": "node server.js",
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {
+    "@distube/ytdl-core": "^4.16.12",
+    "discord-rpc": "^4.0.1",
+    "play-dl": "^1.9.7"
+  },
+  "build": {
+    "appId": "com.unia.musicplayer",
+    "productName": "Unia",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "logo/unia.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Unia"
+    },
+    "files": [
+      "**/*",
+      "!.cache/*",
+      "!dist/*",
+      "!unia_local_db.json",
+      "!android",
+      "!android/**/*"
+    ]
+  }
+}

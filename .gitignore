@@ -1,0 +1,9 @@
+node_modules/
+.cache/
+dist/
+unia_local_db.json
+.env
+.DS_Store
+.idea/
+.vscode/
+*.log

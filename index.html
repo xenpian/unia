@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unia</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <script src="js/lucide.min.js"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+
+<body>
+
+  <!-- App Container -->
+  <div class="app-container">
+
+    <!-- Custom Titlebar -->
+    <header class="titlebar">
+      <!-- Left Controls (now holds user-widgets) -->
+      <div class="titlebar-section left-controls">
+        <div class="user-widgets">
+          <button class="titlebar-btn widget-btn" id="notif-btn" title="Bildirimler">
+            <i data-lucide="bell"></i>
+          </button>
+          <button class="titlebar-btn widget-btn" id="friends-btn" title="Arkadaşlar Etkinliği">
+            <i data-lucide="users"></i>
+          </button>
+          <button class="profile-avatar" id="profile-btn" title="Profil">
+            <span>K</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Title (Shown only on mobile viewports when search is inactive) -->
+      <div id="mobile-header-title" class="mobile-only-flex"
+        style="display: none; flex: 1; justify-content: center; align-items: center; z-index: 10;">
+        <img src="logo/unia.png" alt="Unia Logo"
+          style="height: 28px; width: auto; object-fit: contain; filter: drop-shadow(0 0 8px rgba(184, 158, 255, 0.45));">
+      </div>
+
+      <!-- Center Search & Home -->
+      <div class="titlebar-section center-search">
+        <button class="titlebar-btn home-btn active" id="home-trigger" title="Ana Sayfa">
+          <i data-lucide="home"></i>
+        </button>
+        <div style="position:relative; flex:1; display:flex;" id="search-input-wrapper">
+          <div class="search-container" style="flex:1;">
+            <span class="search-icon">
+              <i data-lucide="search"></i>
+            </span>
+            <input type="text" id="search-input" placeholder="Ne çalmak istiyorsun?" autocomplete="off">
+            <div class="search-divider"></div>
+            <button class="browse-btn" title="Göz At">
+              <i data-lucide="list"></i>
+            </button>
+          </div>
+          <!-- Autocomplete Suggestions Dropdown -->
+          <div id="search-suggestions-dropdown" class="hidden" style="
+            position:absolute; top:46px; left:0; right:0;
+            background:#202020; border:1px solid rgba(255, 255, 255, 0.048);
+            border-radius:8px; padding:6px 0; max-height:300px; overflow-y:auto;
+            box-shadow:0 8px 32px rgba(0,0,0,0.6); z-index:99999;
+          ">
+            <div id="search-suggestions-list" style="display:flex; flex-direction:column; gap:2px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right User Controls & Window spacer (now holds nav controls) -->
+      <div class="titlebar-section right-controls">
+        <button class="titlebar-btn widget-btn" id="shazam-btn" title="Şarkı Bul (Shazam)" style="margin-right: 4px;">
+          <i data-lucide="mic"></i>
+        </button>
+        <button class="titlebar-btn menu-btn" id="menu-trigger" title="Seçenekler">
+          <i data-lucide="more-horizontal"></i>
+        </button>
+        <button class="titlebar-btn widget-btn" id="layout-switcher-btn" title="Arayüz Yerleşimi">
+          <i data-lucide="layout"></i>
+        </button>
+        <div class="nav-history">
+          <button class="titlebar-btn nav-btn disabled" id="nav-back" title="Geri">
+            <i data-lucide="chevron-left"></i>
+          </button>
+          <button class="titlebar-btn nav-btn disabled" id="nav-forward" title="İleri">
+            <i data-lucide="chevron-right"></i>
+          </button>
+        </div>
+        <!-- Native OS titlebar buttons spacer -->
+        <div class="window-actions-spacer"></div>
+      </div>
+    </header>
+
+    <!-- Main Workspace Layout -->
+    <div class="main-layout sidebar-right-hidden-layout">
+
+      <!-- Left Sidebar -->
+      <aside class="sidebar-left">
+        <div class="sidebar-header">
+          <div class="library-title-container">
+            <button class="library-header-btn">
+              <i data-lucide="library"></i>
+              <span>Kitaplığın</span>
+            </button>
+          </div>
+          <div class="library-actions" style="display: flex; align-items: center; gap: 8px;">
+            <div
+              style="display: flex; align-items: center; background: rgba(255,255,255,0.06); border-radius: 12px; padding: 2px 8px; transition: all 0.2s;"
+              id="lib-search-box">
+              <i data-lucide="search" style="font-size: 11px; color: var(--text-muted);"></i>
+              <input type="text" id="lib-search-input" placeholder="Kitaplıkta ara..."
+                style="background: transparent; border: none; outline: none; color: #fff; font-size: 11px; padding: 4px; width: 110px; font-family: inherit;">
+            </div>
+            <button class="sidebar-action-btn" title="Daha fazla göster">
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="filter-pills">
+          <button class="pill-btn active">Tümü</button>
+          <button class="pill-btn">Çalma Listeleri</button>
+          <button class="pill-btn">Albümler</button>
+        </div>
+
+
+
+        <div class="library-list custom-scroll" id="library-list-container">
+          <!-- Liked Songs (special static item) -->
+          <div class="library-item active" data-track-index="0">
+            <div class="library-item-cover liked-songs-grad">
+              <i data-lucide="heart" style="color: white; fill: white;"></i>
+            </div>
+            <div class="library-item-info">
+              <div class="item-title">Beğenilen Şarkılar</div>
+              <div class="item-subtitle">
+                <i data-lucide="map-pin" class="pin-icon"></i>
+                <span>Çalma listesi • 0 Şarkı</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center Content -->
+      <main class="content-center custom-scroll">
+        <!-- Billboard Banner -->
+        <section class="banner-section" id="banner-bg">
+          <div class="banner-overlay" style="overflow: hidden;">
+            <div id="youtube-player-placeholder"></div>
+            <div class="banner-video-shade"
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.45) 60%, rgba(0, 0, 0, 0.2) 100%); z-index: 2; pointer-events: auto;">
+            </div>
+          </div>
+          <div class="banner-badge">
+            <span class="banner-badge-icon">
+              <i data-lucide="info"></i>
+            </span>
+            Universal Music Türkiye <span class="badge-sub">Duyuru</span>
+          </div>
+          <div class="banner-content">
+            <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 16px;">
+              <img id="banner-track-cover" src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300"
+                style="width: 80px; height: 80px; border-radius: 14px; object-fit: cover; box-shadow: 0 8px 24px rgba(0,0,0,0.5);  flex-shrink: 0; transition: transform 0.3s ease;">
+              <h1 class="banner-title" style="margin-bottom: 0 !important;">BABAYLA ZOR YARIŞIRLAR.</h1>
+            </div>
+            <div class="banner-actions">
+              <button class="btn btn-primary" id="banner-play-btn">Hemen dinle</button>
+              <button class="banner-dots-btn">
+                <i data-lucide="more-horizontal"></i>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Dynamic Page Template Holder -->
+        <div id="page-content-holder" style="display:flex; flex-direction:column; gap:24px; padding-bottom:40px;">
+          <!-- Loaded dynamically from pages/ folder -->
+        </div>
+
+        <section class="visualizer-container">
+
+          <!-- Lyrics Overlay Panel -->
+          <div id="lyrics-overlay" class="hidden"
+            style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(9,9,11,0.96);backdrop-filter:blur(20px);z-index:1000;padding:24px;overflow-y:auto;display:flex;flex-direction:column;gap:20px;">
+            <div
+              style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border-light);padding-bottom:12px;">
+              <h2 style="font-size:20px;font-weight:700;color:var(--primary-accent);">Şarkı Sözleri</h2>
+              <button class="header-action-btn" id="close-lyrics-btn"
+                style="background:rgba(255,255,255,0.06);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;">
+                <i data-lucide="x"></i>
+              </button>
+            </div>
+            <div id="lyrics-body"
+              style="font-size:22px;font-weight:600;line-height:1.8;color:var(--text-muted);padding:12px 8px;font-family:inherit;">
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Right Sidebar -->
+      <aside class="sidebar-right custom-scroll sidebar-right-hidden" id="details-sidebar">
+        <!-- Details Content -->
+        <div id="right-details-content">
+          <div class="sidebar-right-header">
+            <a href="#" class="track-header-link" id="right-sidebar-title">—</a>
+            <div class="right-header-actions">
+              <button class="header-action-btn" title="Seçenekler">
+                <i data-lucide="more-horizontal"></i>
+              </button>
+              <button class="header-action-btn" id="close-right-sidebar" title="Kapat">
+                <i data-lucide="x"></i>
+              </button>
+            </div>
+          </div>
+          <div class="right-cover-container">
+            <img id="right-cover-img" src="" alt="Cover">
+          </div>
+          <div class="right-track-details">
+            <div class="track-meta">
+              <h2 id="right-track-name">—</h2>
+              <div id="right-track-artists" class="artists-links">—</div>
+            </div>
+            <div class="track-actions">
+              <button class="track-action-btn" id="right-share-btn" title="Paylaş">
+                <i data-lucide="share-2"></i>
+              </button>
+              <button class="track-action-btn" id="right-like-btn" title="Kitaplığına Kaydet">
+                <i data-lucide="heart"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="banner-graphic hidden">
+            <canvas id="banner-visualizer"></canvas>
+          </div>
+
+          <div class="videos-section">
+            <h3>İlgili müzik videoları</h3>
+            <div class="video-card">
+              <div class="video-thumbnail-container">
+                <img id="right-video-thumb" src="" alt="Video thumbnail">
+                <div class="play-overlay">
+                  <i data-lucide="play" style="fill: currentColor;"></i>
+                </div>
+              </div>
+              <div class="video-info">
+                <div class="video-title" id="right-video-title">—</div>
+                <div class="video-author">
+                  <span class="explicit-badge">E</span>
+                  <span id="right-video-artists">—</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="about-artist-box">
+            <div class="section-title">Sanatçı Hakkında</div>
+            <div class="artist-mini-card">
+              <img class="artist-bg-img" src="" alt="Artist background">
+              <div class="artist-mini-overlay"></div>
+              <div class="artist-card-info">
+                <h4 id="about-artist-name">—</h4>
+                <p class="monthly-listeners">Tür: Pop</p>
+                <p id="about-artist-bio"
+                  style="font-size:11px;color:var(--text-muted);margin-top:6px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
+                </p>
+                <button class="btn btn-outline" style="margin-top:8px;">Takip Et</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Queue Content -->
+        <div id="right-queue-content" class="hidden" style="padding:4px;">
+          <div class="sidebar-right-header"
+            style="margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
+            <span class="track-header-link">Çalma Sırası</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <button id="clear-queue-btn"
+                style="background:transparent; border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:4px 10px; font-size:11px; font-weight:600; color:var(--text-muted); cursor:pointer; transition:all 0.2s;"
+                onmouseover="this.style.color='#fff'; this.style.borderColor='#fff';"
+                onmouseout="this.style.color='var(--text-muted)'; this.style.borderColor='rgba(255,255,255,0.1)';">Sırayı
+                Temizle</button>
+              <button class="header-action-btn" id="close-queue-btn" title="Kapat">
+                <i data-lucide="x"></i>
+              </button>
+            </div>
+          </div>
+          <div style="font-size:13px;font-weight:700;margin-bottom:8px;color:var(--text-muted);">Şu an çalan</div>
+          <div id="queue-now-playing" style="margin-bottom:24px;"></div>
+          <div style="font-size:13px;font-weight:700;margin-bottom:8px;color:var(--text-muted);">Sırada</div>
+          <div id="queue-list-items" style="display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- Bottom Playbar -->
+    <footer class="playbar playbar-hidden">
+      <!-- Track Info -->
+      <div class="playbar-section active-track">
+        <img class="track-cover" id="playbar-cover" src="" alt="Track Cover">
+        <div class="track-text">
+          <div class="track-name" id="playbar-name">—</div>
+          <div class="track-artist" id="playbar-artist">—</div>
+        </div>
+        <button class="track-heart-btn" id="playbar-like" title="Beğen">
+          <i data-lucide="heart" class="heart-empty"></i>
+          <i data-lucide="heart" class="heart-filled hidden"></i>
+        </button>
+        <div style="position:relative;">
+          <button class="track-heart-btn" id="playbar-add-to-playlist" title="Kitaplığa Ekle" style="margin-left:4px;">
+            <i data-lucide="plus"></i>
+          </button>
+          <div id="playlist-add-popup" style="
+            display:none; position:absolute; bottom:44px; left:0;
+            background: #202020; border: 1px solid rgba(255, 255, 255, 0.048);
+            border-radius: 8px; min-width: 180px; padding: 6px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5); z-index: 9999;
+          ">
+            <div
+              style="padding: 8px 16px 6px; font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: .05em; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.03); margin-bottom: 4px;">
+              Kitaplığa Ekle</div>
+            <div id="playlist-add-popup-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Playback Controls -->
+      <div class="playbar-section playback-controls">
+        <div class="control-buttons">
+          <button class="control-btn" id="ctrl-shuffle" title="Karışık Çal">
+            <i data-lucide="shuffle"></i>
+          </button>
+          <button class="control-btn" id="ctrl-prev" title="Önceki">
+            <i data-lucide="skip-back" style="fill: currentColor;"></i>
+          </button>
+          <button class="play-pause-btn" id="ctrl-play" title="Çal">
+            <div id="play-icon"><i data-lucide="play" style="fill: currentColor;"></i></div>
+            <div id="pause-icon" class="hidden"><i data-lucide="pause" style="fill: currentColor;"></i></div>
+          </button>
+          <button class="control-btn" id="ctrl-next" title="Sonraki">
+            <i data-lucide="skip-forward" style="fill: currentColor;"></i>
+          </button>
+          <button class="control-btn" id="ctrl-repeat" title="Tekrarla">
+            <i data-lucide="repeat"></i>
+          </button>
+        </div>
+        <!-- Progress Timeline -->
+        <div class="progress-timeline">
+          <span class="time-stamp" id="time-elapsed">0:00</span>
+          <div class="slider-container" id="timeline-slider-box">
+            <div class="slider-track"></div>
+            <div class="slider-fill" id="timeline-fill" style="width:0%;"></div>
+            <div class="slider-thumb" id="timeline-thumb" style="left:0%;"></div>
+          </div>
+          <span class="time-stamp" id="time-duration">0:00</span>
+        </div>
+      </div>
+
+      <!-- Utility Controls -->
+      <div class="playbar-section utility-controls">
+        <!-- lyrics -->
+        <button class="utility-btn" id="util-lyrics" title="Şarkı Sözleri">
+          <i data-lucide="quote"></i>
+        </button>
+        <!-- playlist_play (queue) -->
+        <button class="utility-btn" id="util-queue" title="Sıra">
+          <i data-lucide="list-music"></i>
+        </button>
+        <!-- devices -->
+        <button class="utility-btn" id="util-device" title="Bir Cihaza Bağlan">
+          <i data-lucide="monitor"></i>
+        </button>
+        <!-- equalizer -->
+        <button class="utility-btn" id="util-eq" title="Ekolayzır">
+          <i data-lucide="sliders"></i>
+        </button>
+        <!-- Volume -->
+        <div class="volume-container">
+          <button class="utility-btn" id="volume-icon-btn" title="Ses">
+            <div id="vol-high"><i data-lucide="volume-2"></i></div>
+            <div id="vol-mute" class="hidden"><i data-lucide="volume-x"></i></div>
+          </button>
+          <div class="slider-container" id="volume-slider-box" style="width:93px;">
+            <div class="slider-track"></div>
+            <div class="slider-fill" id="volume-fill" style="width:75%;"></div>
+            <div class="slider-thumb" id="volume-thumb" style="left:75%;"></div>
+          </div>
+        </div>
+        <!-- picture_in_picture_alt (Mini Player) -->
+        <button class="utility-btn" id="util-pip" title="Mini Oynatıcı">
+          <i data-lucide="minimize-2"></i>
+        </button>
+        <!-- Sleep Timer -->
+        <button class="utility-btn" id="util-sleep-timer" title="Uyku Zamanlayıcısı">
+          <i data-lucide="timer"></i>
+        </button>
+        <!-- fullscreen -->
+        <button class="utility-btn" id="util-fullscreen" title="Tam Ekran">
+          <i data-lucide="maximize-2"></i>
+        </button>
+      </div>
+    </footer>
+
+    <!-- Mobile Mini Player (Shown only on mobile viewports) -->
+    <div id="mobile-mini-player" class="mobile-only-flex" style="display: none;">
+      <div class="mini-player-track-info" style="display:flex; align-items:center; gap:10px; flex:1; overflow:hidden;">
+        <img src="" id="mobile-mini-artwork" alt=""
+          style="width:38px; height:38px; border-radius:4px; object-fit:cover; flex-shrink:0;">
+        <div style="overflow:hidden; display:flex; flex-direction:column; gap:2px;">
+          <div id="mobile-mini-track-name"
+            style="font-size:12px; font-weight:700; color:white; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+            -</div>
+          <div id="mobile-mini-artist"
+            style="font-size:10px; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+            -</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:14px; margin-left:10px;">
+        <button class="mobile-mini-btn" id="mobile-mini-play" title="Oynat">
+          <i data-lucide="play" style="width:16px; height:16px; fill:currentColor;"></i>
+        </button>
+        <button class="mobile-mini-btn" id="mobile-mini-next" title="Sonraki">
+          <i data-lucide="skip-forward" style="width:16px; height:16px;"></i>
+        </button>
+      </div>
+      <!-- Tiny Progress Bar at the bottom of the Mini Player -->
+      <div class="mobile-mini-progress-bar" style="    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin-left: 3px;
+    right: 0;
+    height: 5px;
+    margin-right: 3px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;">
+        <div id="mobile-mini-progress-fill"
+          style="width: 0%; height: 100%; background: var(--primary-accent); transition: width 0.1s linear;"></div>
+      </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar (Shown only on mobile viewports) -->
+    <nav class="mobile-nav-bar mobile-only-flex" style="display: none;">
+      <button class="mobile-nav-item active" id="mobile-tab-home">
+        <i data-lucide="home"></i>
+        <span>Ana Sayfa</span>
+      </button>
+      <button class="mobile-nav-item" id="mobile-tab-search">
+        <i data-lucide="search"></i>
+        <span>Ara</span>
+      </button>
+      <button class="mobile-nav-item" id="mobile-tab-library">
+        <i data-lucide="library"></i>
+        <span>Kitaplığım</span>
+      </button>
+      <button class="mobile-nav-item" id="mobile-tab-queue">
+        <i data-lucide="list-music"></i>
+        <span>Sıradakiler</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <!-- Equalizer Popup -->
+  <div id="eq-popup" class="hidden"
+    style="position:absolute;bottom:100px;right:120px;width:300px;background:rgba(18,18,18,0.95);backdrop-filter:blur(10px);border:1px solid var(--border-light);border-radius:8px;padding:20px;z-index:1000;box-shadow:0 8px 30px rgba(0,0,0,0.6); font-family:inherit;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:700;color:var(--text-main);">Ekolayzır (Audio EQ)</div>
+      <select id="eq-preset-select"
+        style="background:rgba(255,255,255,0.06); border:none; color:var(--text-main); font-size:11px; padding:4px 8px; border-radius:4px; outline:none; font-family:inherit; cursor:pointer;">
+        <option value="flat">Düz (Flat)</option>
+        <option value="bass">Bass Booster</option>
+        <option value="vocal">Vocal Booster</option>
+        <option value="pop">Pop</option>
+        <option value="electronic">Electronic</option>
+      </select>
+    </div>
+
+    <div
+      style="display:flex; justify-content:space-between; align-items:center; height:120px; padding:0 10px; margin-bottom:12px;">
+      <!-- Band 1: 60Hz -->
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px; height:100%;">
+        <input type="range" class="eq-slider" id="eq-band-0" min="-12" max="12" value="0" orient="vertical"
+          style="writing-mode: bt-lr; -webkit-appearance: slider-vertical; width:8px; height:80px; background:rgba(255,255,255,0.1); border-radius:4px; outline:none;">
+        <span style="font-size:9px; color:var(--text-muted);">60Hz</span>
+      </div>
+      <!-- Band 2: 230Hz -->
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px; height:100%;">
+        <input type="range" class="eq-slider" id="eq-band-1" min="-12" max="12" value="0" orient="vertical"
+          style="writing-mode: bt-lr; -webkit-appearance: slider-vertical; width:8px; height:80px; background:rgba(255,255,255,0.1); border-radius:4px; outline:none;">
+        <span style="font-size:9px; color:var(--text-muted);">230Hz</span>
+      </div>
+      <!-- Band 3: 910Hz -->
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px; height:100%;">
+        <input type="range" class="eq-slider" id="eq-band-2" min="-12" max="12" value="0" orient="vertical"
+          style="writing-mode: bt-lr; -webkit-appearance: slider-vertical; width:8px; height:80px; background:rgba(255,255,255,0.1); border-radius:4px; outline:none;">
+        <span style="font-size:9px; color:var(--text-muted);">910Hz</span>
+      </div>
+      <!-- Band 4: 4kHz -->
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px; height:100%;">
+        <input type="range" class="eq-slider" id="eq-band-3" min="-12" max="12" value="0" orient="vertical"
+          style="writing-mode: bt-lr; -webkit-appearance: slider-vertical; width:8px; height:80px; background:rgba(255,255,255,0.1); border-radius:4px; outline:none;">
+        <span style="font-size:9px; color:var(--text-muted);">4kHz</span>
+      </div>
+      <!-- Band 5: 14kHz -->
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px; height:100%;">
+        <input type="range" class="eq-slider" id="eq-band-4" min="-12" max="12" value="0" orient="vertical"
+          style="writing-mode: bt-lr; -webkit-appearance: slider-vertical; width:8px; height:80px; background:rgba(255,255,255,0.1); border-radius:4px; outline:none;">
+        <span style="font-size:9px; color:var(--text-muted);">14kHz</span>
+      </div>
+    </div>
+    <div style="font-size:10px; color:var(--text-muted); text-align:center;">Yerel Dosyalarınızda EQ etkindir</div>
+  </div>
+
+  <!-- Sleep Timer Popup -->
+  <div id="sleep-timer-popup" class="hidden"
+    style="position:absolute;bottom:100px;right:180px;width:200px;background:rgba(18,18,18,0.95);backdrop-filter:blur(10px);border:1px solid var(--border-light);border-radius:8px;padding:16px;z-index:1000;box-shadow:0 8px 30px rgba(0,0,0,0.6); font-family:inherit;">
+    <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text-main);font-family:inherit;display:flex;justify-content:space-between;align-items:center;">
+      <span>Uyku Zamanlayıcısı</span>
+      <span id="sleep-timer-countdown" style="font-size:11px;color:var(--primary-accent);font-weight:700;"></span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;" id="sleep-timer-options">
+      <div class="sleep-option active" data-time="0" style="padding:8px;border-radius:4px;cursor:pointer;font-size:12px;color:var(--primary-accent);display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.05);">
+        <span>Kapalı</span>
+      </div>
+      <div class="sleep-option" data-time="5" style="padding:8px;border-radius:4px;cursor:pointer;font-size:12px;color:var(--text-muted);display:flex;justify-content:space-between;align-items:center;transition:all 0.2s;">
+        <span>5 Dakika</span>
+      </div>
+      <div class="sleep-option" data-time="15" style="padding:8px;border-radius:4px;cursor:pointer;font-size:12px;color:var(--text-muted);display:flex;justify-content:space-between;align-items:center;transition:all 0.2s;">
+        <span>15 Dakika</span>
+      </div>
+      <div class="sleep-option" data-time="30" style="padding:8px;border-radius:4px;cursor:pointer;font-size:12px;color:var(--text-muted);display:flex;justify-content:space-between;align-items:center;transition:all 0.2s;">
+        <span>30 Dakika</span>
+      </div>
+      <div class="sleep-option" data-time="60" style="padding:8px;border-radius:4px;cursor:pointer;font-size:12px;color:var(--text-muted);display:flex;justify-content:space-between;align-items:center;transition:all 0.2s;">
+        <span>1 Saat</span>
+      </div>
+      <div class="sleep-option" data-time="end-of-song" style="padding:8px;border-radius:4px;cursor:pointer;font-size:12px;color:var(--text-muted);display:flex;justify-content:space-between;align-items:center;transition:all 0.2s;">
+        <span>Şarkı Bitiminde</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Devices Popup -->
+  <div id="devices-popup" class="hidden"
+    style="position:absolute;bottom:100px;right:20px;width:260px;background:rgba(18,18,18,0.95);backdrop-filter:blur(10px);border:1px solid var(--border-light);border-radius:8px;padding:16px;z-index:1000;box-shadow:0 8px 30px rgba(0,0,0,0.6);">
+    <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text-main);font-family:inherit;">Bir
+      Cihaza Bağlan</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="device-item active"
+        style="display:flex;align-items:center;gap:12px;padding:8px;border-radius:6px;cursor:pointer;background:rgba(190,27,90,0.1);color:var(--primary-accent);">
+        <i data-lucide="monitor" style="width:18px;height:18px;"></i>
+        <span style="font-size:12px;font-weight:600;">Bu Bilgisayar (Aktif)</span>
+      </div>
+      <div class="device-item"
+        style="display:flex;align-items:center;gap:12px;padding:8px;border-radius:6px;cursor:pointer;color:var(--text-muted);">
+        <i data-lucide="tablet" style="width:18px;height:18px;"></i>
+        <span style="font-size:12px;font-weight:600;">Unia Mobile</span>
+      </div>
+      <div class="device-item"
+        style="display:flex;align-items:center;gap:12px;padding:8px;border-radius:6px;cursor:pointer;color:var(--text-muted);">
+        <i data-lucide="headphones" style="width:18px;height:18px;"></i>
+        <span style="font-size:12px;font-weight:600;">Oturma Odası Hoparlörü</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Layout Switcher Popup -->
+  <div id="layout-popup" class="hidden" style="
+    position: absolute;
+    top: 60px;
+    right: 80px;
+    width: 250px;
+    background: rgba(18, 18, 18, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 16px;
+    z-index: 10000;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  ">
+    <div style="font-size: 13px; font-weight: 700; margin-bottom: 12px; color: var(--text-main); font-family: inherit;">
+      Arayüz Düzeni ve Yerleşimi
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px;" id="layout-options-container">
+      <div class="layout-item active" data-layout="default" style="
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-main);
+        transition: all 0.2s ease;
+      ">
+        <i data-lucide="layout" style="width: 18px; height: 18px;"></i>
+        <span style="font-size: 12px; font-weight: 600;">Standart Düzen</span>
+      </div>
+
+      <div class="layout-item" data-layout="mirrored" style="
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        background: transparent;
+        color: var(--text-muted);
+        transition: all 0.2s ease;
+      ">
+        <i data-lucide="columns-3" style="width: 18px; height: 18px;"></i>
+        <span style="font-size: 12px; font-weight: 600;">Ters Ayna Düzeni</span>
+      </div>
+
+      <div class="layout-item" data-layout="side-left" style="
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        background: transparent;
+        color: var(--text-muted);
+        transition: all 0.2s ease;
+      ">
+        <i data-lucide="layout-grid" style="width: 18px; height: 18px;"></i>
+        <span style="font-size: 12px; font-weight: 600;">Side-by-Side (Sol)</span>
+      </div>
+
+      <div class="layout-item" data-layout="side-right" style="
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        background: transparent;
+        color: var(--text-muted);
+        transition: all 0.2s ease;
+      ">
+        <i data-lucide="layout-dashboard" style="width: 18px; height: 18px;"></i>
+        <span style="font-size: 12px; font-weight: 600;">Side-by-Side (Sağ)</span>
+      </div>
+
+      <div class="layout-item" data-layout="compact" style="
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        background: transparent;
+        color: var(--text-muted);
+        transition: all 0.2s ease;
+      ">
+        <i data-lucide="minimize-2" style="width: 18px; height: 18px;"></i>
+        <span style="font-size: 12px; font-weight: 600;">Kompakt Minimalist</span>
+      </div>
+
+      <div class="layout-item" data-layout="cinema" style="
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        background: transparent;
+        color: var(--text-muted);
+        transition: all 0.2s ease;
+      ">
+        <i data-lucide="tv" style="width: 18px; height: 18px;"></i>
+        <span style="font-size: 12px; font-weight: 600;">Sinematik Geniş Ekran</span>
+      </div>
+
+      <div class="layout-item" data-layout="split-v" style="
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        background: transparent;
+        color: var(--text-muted);
+        transition: all 0.2s ease;
+      ">
+        <i data-lucide="layout-grid" style="width: 18px; height: 18px;"></i>
+        <span style="font-size: 12px; font-weight: 600;">Dikey Yığılmış Sol</span>
+      </div>
+
+      <div class="layout-item" data-layout="split-h" style="
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        background: transparent;
+        color: var(--text-muted);
+        transition: all 0.2s ease;
+      ">
+        <i data-lucide="layout-dashboard" style="width: 18px; height: 18px;"></i>
+        <span style="font-size: 12px; font-weight: 600;">Dikey Yığılmış Sağ</span>
+      </div>
+
+      <div class="layout-item" data-layout="autohide-left" style="
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        background: transparent;
+        color: var(--text-muted);
+        transition: all 0.2s ease;
+      ">
+        <i data-lucide="sidebar-open" style="width: 18px; height: 18px;"></i>
+        <span style="font-size: 12px; font-weight: 600;">Oto Gizlenen Sol Sidebar</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden YouTube Player Container (Moved to Banner Overlay) -->
+
+  <!-- Auth Overlay (Removed/Bypassed) -->
+  <div id="auth-modal" class="auth-backdrop hidden" style="display: none !important;">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h2 class="auth-title" id="auth-title">Giriş Yap</h2>
+      </div>
+      <div id="auth-form" class="auth-input-group">
+        <input type="text" id="auth-username" class="auth-input" placeholder="Kullanıcı Adı" autocomplete="username">
+        <input type="email" id="auth-email" class="auth-input" placeholder="E-posta" style="display:none;"
+          autocomplete="email">
+        <input type="password" id="auth-password" class="auth-input" placeholder="Parola"
+          autocomplete="current-password">
+        <input type="password" id="auth-password-confirm" class="auth-input" placeholder="Parolayı Onayla"
+          style="display:none;" autocomplete="new-password">
+        <button id="auth-submit-btn" class="auth-btn">Giriş Yap</button>
+      </div>
+      <div class="auth-footer">
+        Hesabın yok mu? <span id="auth-toggle-mode" class="auth-link">Kayıt Ol</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Followed Artists Modal -->
+  <div id="followed-artists-modal" class="hidden"
+    style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);z-index:9999;align-items:center;justify-content:center;display:none;">
+    <div
+      style="background:#181818;width:450px;max-height:80vh;border-radius:16px;padding:28px;box-shadow:0 16px 40px rgba(0,0,0,0.8);border:1px solid var(--border-light);display:flex;flex-direction:column;gap:18px;">
+      <div
+        style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border-light);padding-bottom:12px;">
+        <h2 style="font-size:20px;font-weight:800;color:var(--text-main);margin:0;">Takip Edilen Sanatçılar</h2>
+        <button id="close-followed-modal-btn"
+          style="background:rgba(255,255,255,0.06);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;color:var(--text-main);">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div id="followed-artists-list" class="custom-scroll"
+        style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-right:4px;max-height:50vh;">
+        <!-- Dynamic Followed Artist items will go here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Followers Modal -->
+  <div id="followers-modal" class="hidden"
+    style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);z-index:9999;align-items:center;justify-content:center;display:none;">
+    <div
+      style="background:#181818;width:450px;max-height:80vh;border-radius:16px;padding:28px;box-shadow:0 16px 40px rgba(0,0,0,0.8);border:1px solid var(--border-light);display:flex;flex-direction:column;gap:18px;">
+      <div
+        style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border-light);padding-bottom:12px;">
+        <h2 style="font-size:20px;font-weight:800;color:var(--text-main);margin:0;">Takipçiler</h2>
+        <button id="close-followers-modal-btn"
+          style="background:rgba(255,255,255,0.06);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;color:var(--text-main);">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div id="followers-list" class="custom-scroll"
+        style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-right:4px;max-height:50vh;">
+        <!-- Dynamic Follower items will go here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Premium Mini-Player Container -->
+  <div id="mini-player-container" class="hidden" style="
+    position: fixed; inset: 0; z-index: 99999;
+    display: flex; flex-direction: column;
+    background: rgba(10, 10, 12, 0.85);
+    backdrop-filter: blur(40px) saturate(180%);
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+  ">
+    <!-- Draggable Mini Titlebar Header -->
+    <div class="mini-header" style="
+      height: 32px; padding: 0 12px; display: flex; justify-content: space-between; align-items: center;
+      -webkit-app-region: drag; cursor: grab; background: rgba(0,0,0,0.15); border-bottom: 1px solid rgba(255,255,255,0.03);
+    ">
+      <div
+        style="font-size: 11px; font-weight: 700; color: var(--primary-accent); display:flex; align-items:center; gap:6px;">
+        <i data-lucide="disc" class="lucide-spin" style="width:12px; height:12px;"></i>
+        <span>Unia Mini</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; -webkit-app-region: no-drag;">
+        <!-- Restore Button -->
+        <button id="mini-restore-btn" title="Genişlet"
+          style="background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; transition: color 0.2s;">
+          <i data-lucide="maximize-2" style="width:12px; height:12px;"></i>
+        </button>
+        <!-- Close Button -->
+        <button id="mini-close-btn" title="Kapat"
+          style="background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; transition: color 0.2s;">
+          <i data-lucide="x" style="width:12px; height:12px;"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mini Body Info -->
+    <div
+      style="flex: 1; padding: 12px 16px; display: flex; gap: 14px; align-items: center; overflow: hidden; position: relative;">
+      <!-- Dynamic Blurred Backdrop Inside Mini Player -->
+      <div id="mini-backdrop-glow" style="
+        position: absolute; inset: 0; z-index: -1;
+        background-size: cover; background-position: center;
+        filter: blur(35px) saturate(180%) opacity(0.25);
+        transition: background-image 0.5s ease-in-out;
+      "></div>
+
+      <!-- Mini Album Art -->
+      <div
+        style="width: 76px; height: 76px; border-radius: 8px; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.5); flex-shrink: 0; border: 1px solid rgba(255,255,255,0.06);">
+        <img id="mini-cover" src="" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+
+      <!-- Mini Meta & Controls -->
+      <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden; gap: 6px;">
+        <div style="overflow: hidden;">
+          <div id="mini-track-name"
+            style="font-size: 13px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.2px;">
+            —</div>
+          <div id="mini-artist-name"
+            style="font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;">
+            —</div>
+        </div>
+
+        <!-- Mini Control Buttons -->
+        <div style="display: flex; align-items: center; gap: 14px; margin-top: 4px;">
+          <button id="mini-prev" class="mini-control-btn" title="Önceki"
+            style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; padding:2px;"><i
+              data-lucide="skip-back" style="width:14px; height:14px;"></i></button>
+          <button id="mini-play-pause" class="mini-control-btn" title="Çal / Duraklat"
+            style="background:var(--primary-accent); border:none; color:#000; cursor:pointer; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px var(--primary-accent-glow); transition: all 0.2s;"><i
+              data-lucide="play"
+              style="width:12px; height:12px; fill:currentColor; stroke-width:3px !important;"></i></button>
+          <button id="mini-next" class="mini-control-btn" title="Sonraki"
+            style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; padding:2px;"><i
+              data-lucide="skip-forward" style="width:14px; height:14px;"></i></button>
+          <button id="mini-like" class="mini-control-btn" title="Beğen"
+            style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; padding:2px; margin-left: auto;"><i
+              data-lucide="heart" style="width:13px; height:13px;"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mini Progress Slider -->
+    <div
+      style="height: 14px; padding: 0 16px; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.1); border-top: 1px solid rgba(255,255,255,0.03);">
+      <span id="mini-time-elapsed"
+        style="font-size: 9px; font-weight: 700; color: var(--text-muted); font-family: monospace;">0:00</span>
+      <div id="mini-timeline-slider" class="slider-container"
+        style="flex: 1; height: 3px; cursor: pointer; position: relative;">
+        <div class="slider-track" style="height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px;"></div>
+        <div id="mini-timeline-fill" class="slider-fill"
+          style="height: 3px; width: 0%; background: var(--primary-accent); border-radius: 2px; position: absolute; top: 0; left: 0;">
+        </div>
+      </div>
+      <span id="mini-time-duration"
+        style="font-size: 9px; font-weight: 700; color: var(--text-muted); font-family: monospace;">0:00</span>
+    </div>
+  </div>
+
+  <!-- Sleek Context Dropdown Menu -->
+  <div id="custom-context-menu" class="hidden" style="
+    position: fixed;
+    background: #202020;
+    border: 1px solid rgba(255, 255, 255, 0.048);
+    border-radius: 8px;
+    min-width: 180px;
+    z-index: 10000;
+    padding: 6px 0;
+  ">
+    <div class="context-item" id="ctx-add-queue"
+      style="padding: 10px 16px; cursor: pointer; font-size: 13px; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+      <i data-lucide="list-music" style="width: 16px;"></i> Sıraya Ekle
+    </div>
+    <div class="context-item" id="ctx-like"
+      style="padding: 10px 16px; cursor: pointer; font-size: 13px; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+      <i data-lucide="heart" style="width: 16px;"></i> Beğenilenlere Ekle
+    </div>
+    <div class="context-item" id="ctx-share"
+      style="padding: 10px 16px; cursor: pointer; font-size: 13px; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+      <i data-lucide="share-2" style="width: 16px;"></i> Bağlantıyı Kopyala
+    </div>
+    <div class="context-item" id="ctx-remove-recent"
+      style="padding: 10px 16px; cursor: pointer; font-size: 13px; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+      <i data-lucide="history" style="width: 16px;"></i> Son Dinlenenlerden Çıkar
+    </div>
+  </div>
+
+  <!-- Playlist Context Menu -->
+  <div id="playlist-context-menu" class="hidden" style="
+    position: fixed;
+    background: #202020;
+    border: 1px solid rgba(255, 255, 255, 0.048);
+    border-radius: 8px;
+    min-width: 180px;
+    z-index: 10000;
+    padding: 6px 0;
+  ">
+    <div class="context-item" id="pl-ctx-delete"
+      style="padding: 10px 16px; cursor: pointer; font-size: 13px; color: #ffffff; display: flex; align-items: center; gap: 8px;">
+      <i data-lucide="trash-2" style="width: 16px; color: #ffffff;"></i> Çalma Listesini Sil
+    </div>
+  </div>
+
+  <!-- Custom Confirm Modal -->
+  <div id="confirm-modal" class="hidden" style="
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 11000;
+  ">
+    <div style="
+      background: #181818;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 24px;
+      width: 380px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: modalFadeIn 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    ">
+      <div style="display: flex; align-items: center; gap: 12px; color: white;">
+        <i data-lucide="alert-circle" style="font-size: 24px;"></i>
+        <h3 style="font-size: 18px; font-weight: 800; margin: 0; font-family: inherit;">Çalma Listesini Sil</h3>
+      </div>
+      <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0; font-family: inherit;"
+        id="confirm-modal-text">
+        Bu çalma listesini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+      </p>
+      <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px;">
+        <button id="confirm-cancel-btn" style="
+          background: transparent;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: var(--text-main);
+          border-radius: 20px;
+          padding: 8px 20px;
+          font-size: 12px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.2s;
+          font-family: inherit;
+        ">Vazgeç</button>
+        <button id="confirm-ok-btn" style="
+          background: var(--primary-accent);
+          border: none;
+          color: #000;
+          border-radius: 20px;
+          padding: 8px 20px;
+          font-size: 12px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.2s;
+          font-family: inherit;
+        " onmouseover="this.style.background='var(--primary-accent-hover)'; this.style.transform='scale(1.03)';"
+          onmouseout="this.style.background='var(--primary-accent)'; this.style.transform='scale(1)';">Sil</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Now Playing Fullscreen Overlay -->
+  <div id="mobile-now-playing" class="hidden">
+    <div class="mobile-now-playing-header">
+      <button class="mobile-close-btn" id="close-mobile-player" title="Kapat">
+        <i data-lucide="chevron-down" style="width:24px; height:24px;"></i>
+      </button>
+      <div class="mobile-player-header-title">Şimdi Çalan</div>
+      <button class="mobile-menu-btn" id="mobile-player-options" title="Seçenekler">
+        <i data-lucide="more-horizontal" style="width:20px; height:20px;"></i>
+      </button>
+    </div>
+
+    <div class="mobile-now-playing-body">
+      <!-- Immersive Background Artwork Glow -->
+      <div id="mobile-player-glow" class="mobile-artwork-glow"></div>
+
+      <!-- Album Artwork Container -->
+      <div class="mobile-artwork-container">
+        <img src="" id="mobile-player-artwork" alt="" class="mobile-artwork-img">
+      </div>
+
+      <!-- Track Meta (Name, Artist) -->
+      <div class="mobile-player-track-meta">
+        <div style="flex:1; overflow:hidden;">
+          <div id="mobile-player-track-name" class="mobile-track-title">-</div>
+          <div id="mobile-player-artist" class="mobile-track-subtitle">-</div>
+        </div>
+        <button class="mobile-meta-action-btn" id="mobile-like-btn" title="Beğen">
+          <i data-lucide="heart" style="width:20px; height:20px;"></i>
+        </button>
+      </div>
+
+      <!-- Progress Slider Section -->
+      <div class="mobile-player-progress-section">
+        <div class="slider-container" id="mobile-timeline-box" style="height:4px; margin-bottom:10px; cursor:pointer;">
+          <div class="slider-track" style="height:4px;"></div>
+          <div class="slider-fill" id="mobile-timeline-fill" style="width:0%; height:4px;"></div>
+          <div class="slider-thumb" id="mobile-timeline-thumb"
+            style="left:0%; width:10px; height:10px; margin-left:-5px; margin-top:-3px;"></div>
+        </div>
+        <div class="mobile-progress-time"
+          style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-muted); font-weight:600;">
+          <span id="mobile-current-time">0:00</span>
+          <span id="mobile-duration">0:00</span>
+        </div>
+      </div>
+
+      <!-- Compact Dynamic Equalizer Visualizer -->
+      <div class="mobile-visualizer-container"
+        style="height:25px; margin: 12px 0 6px 0; display:flex; justify-content:center; align-items:flex-end;">
+        <canvas id="mobile-visualizer-canvas" style="width:100%; height:100%; display:block;"></canvas>
+      </div>
+
+      <!-- Main Mobile Player Playback Control Deck -->
+      <div class="mobile-player-controls">
+        <button class="mobile-control-btn" id="mobile-shuffle" title="Karıştır">
+          <i data-lucide="shuffle" style="width:18px; height:18px;"></i>
+        </button>
+        <button class="mobile-control-btn" id="mobile-prev" title="Önceki">
+          <i data-lucide="skip-back" style="width:24px; height:24px; fill:currentColor;"></i>
+        </button>
+        <button class="mobile-control-btn play-pause-main" id="mobile-play-pause" title="Oynat">
+          <i data-lucide="play" style="width:26px; height:26px; fill:currentColor; stroke-width:2.2px;"></i>
+        </button>
+        <button class="mobile-control-btn" id="mobile-next" title="Sonraki">
+          <i data-lucide="skip-forward" style="width:24px; height:24px; fill:currentColor;"></i>
+        </button>
+        <button class="mobile-control-btn" id="mobile-repeat" title="Tekrarla">
+          <i data-lucide="repeat" style="width:18px; height:18px;"></i>
+        </button>
+      </div>
+
+      <!-- Quick Action Utility Bar (Volume / Lyrics / Queue) -->
+      <div class="mobile-player-utility-bar"
+        style="display:flex; justify-content:space-around; align-items:center; margin-top:20px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.04);">
+        <button class="mobile-utility-btn" id="mobile-lyrics-trigger" title="Şarkı Sözleri">
+          <i data-lucide="align-left" style="width:18px; height:18px;"></i>
+        </button>
+        <div class="mobile-vol-container" style="display:flex; align-items:center; gap:8px; width:45%;">
+          <i data-lucide="volume-1" style="width:14px; height:14px; color:var(--text-muted);"></i>
+          <div class="slider-container" id="mobile-volume-box" style="flex:1; height:3px; cursor:pointer;">
+            <div class="slider-track" style="height:3px;"></div>
+            <div class="slider-fill" id="mobile-volume-fill" style="width:75%; height:3px;"></div>
+            <div class="slider-thumb" id="mobile-volume-thumb"
+              style="left:75%; width:8px; height:8px; margin-left:-4px; margin-top:-2.5px;"></div>
+          </div>
+        </div>
+        <button class="mobile-utility-btn" id="mobile-queue-trigger" title="Çalma Sırası">
+          <i data-lucide="list" style="width:18px; height:18px;"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- App Logic -->
+  <script type="module" src="renderer.js"></script>
+</body>
+
+</html>

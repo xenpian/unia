@@ -1,0 +1,44 @@
+<div style="position: relative;">
+  <!-- Back Button -->
+  <button class="btn btn-outline" id="profile-back-btn"
+    style="position: absolute; top: 0; right: 0; display: none; align-items: center; gap: 8px; z-index: 100;">
+    <i class="ph-fill ph-arrow-left"></i> Geri Dön
+  </button>
+
+  <div style="display:flex; align-items:flex-end; gap:24px; margin-bottom:32px;">
+    <div id="profile-photo-container"
+      style="width:120px; height:120px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:48px; font-weight:800; color:#fff; overflow:hidden; position:relative;"
+      title="Fotoğrafı Değiştir">
+      <div id="profile-photo-inner"
+        style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+        <span id="profile-photo-initial">?</span>
+      </div>
+      <img id="profile-photo-img" src=""
+        style="width:100%; height:100%; object-fit:cover; border-radius:50%; display:none;" />
+      <div
+        style="position:absolute; bottom:0; left:0; width:100%; background:rgba(0,0,0,0.6); color:#fff; font-size:11px; padding:4px 0; opacity:0; transition:opacity 0.2s; text-align:center;"
+        id="profile-photo-hover">Değiştir</div>
+    </div>
+    <input type="file" id="profile-photo-input" accept="image/*" style="display:none;">
+
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <span
+        style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--text-muted); letter-spacing:1px; font-family:inherit;">Profil</span>
+      <h1 style="font-size:48px; font-weight:800; margin:0; font-family:inherit; color:var(--text-main);"
+        id="profile-username-label">Kullanıcı</h1>
+      <div style="font-size:13px; color:var(--text-muted); display:flex; gap:16px; margin-top:8px;">
+        <span id="profile-followers-btn" style="cursor:pointer; font-weight:700; transition:color 0.2s;"
+          onmouseover="this.style.color='var(--primary-accent)'" onmouseout="this.style.color='var(--text-muted)'">0
+          Takipçi</span>
+        <span id="profile-following-btn" style="cursor:pointer; font-weight:700; transition:color 0.2s;"
+          onmouseover="this.style.color='var(--primary-accent)'" onmouseout="this.style.color='var(--text-muted)'">0
+          Takip Edilen</span>
+        <span id="profile-playlists-count">0 Çalma Listesi</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="profile-actions-area">
+    <!-- Action buttons (Logout, Follow/Unfollow, etc.) will be dynamically rendered here -->
+  </div>
+</div>
